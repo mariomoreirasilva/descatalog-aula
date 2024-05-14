@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.devsuperior.dscatalog.dto.CategoryDTO;
 import com.devsuperior.dscatalog.entities.Category;
 import com.devsuperior.dscatalog.services.CategoryService;
 
@@ -17,8 +18,8 @@ public class CategoryResource {
 	@Autowired
 	private CategoryService service;
 	
-	@GetMapping
-	public ResponseEntity<List<Category>> findAll(){	
+	//@GetMapping	
+	//public ResponseEntity<List<Category>> findAll(){	
 		//testando a API
 		/*
 		List<Category> list = new ArrayList<>();
@@ -27,9 +28,14 @@ public class CategoryResource {
 		return ResponseEntity.ok().body(list);	
 		*/	
 		//fim teste
-		List<Category> list = service.findAll();
+		//abaixo segunto teste, mas não pode acessar diretamente a entidade. Tinha que ser o DTO
+	//	List<Category> list = service.findAll();		
+	//	return ResponseEntity.ok(list);
+	//}
+	@GetMapping
+	public ResponseEntity<List<CategoryDTO>> findAll(){
+		List<CategoryDTO> list = service.findAll();
 		return ResponseEntity.ok(list);
 	}
-	
 
 }
