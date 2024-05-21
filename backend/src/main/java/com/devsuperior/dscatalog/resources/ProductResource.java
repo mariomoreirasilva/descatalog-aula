@@ -53,11 +53,9 @@ public class ProductResource {
 	public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO dto){
 		 dto = service.insert(dto);
 		 //colocar o cabeario da resposta de inserção
-		 //URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
+		 URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
 		 //retorno com http 201(criado)
-		 //return ResponseEntity.created(uri).body(dto);
-		 return null;
-		 
+		 return ResponseEntity.created(uri).body(dto);		 		
 	}
 	
 	@PutMapping(value = "/{id}")
