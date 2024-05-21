@@ -18,42 +18,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.devsuperior.dscatalog.dto.CategoryDTO;
-import com.devsuperior.dscatalog.services.CategoryService;
+import com.devsuperior.dscatalog.dto.ProductDTO;
+import com.devsuperior.dscatalog.services.ProductService;
 
 @RestController
-@RequestMapping(value = "/categories")
-public class CategoryResource {
+@RequestMapping(value = "/products")
+public class ProductResource {
 	@Autowired
-	private CategoryService service;
+	private ProductService service;
 	
-	//@GetMapping	
-	//public ResponseEntity<List<Category>> findAll(){	
-		//testando a API
-		/*
-		List<Category> list = new ArrayList<>();
-		list.add(new Category(1L, "Teste Cat 1"));
-		list.add(new Category(2L, "Teste Cat 2"));
-		return ResponseEntity.ok().body(list);	
-		*/	
-		//fim teste
-		//abaixo segunto teste, mas não pode acessar diretamente a entidade. Tinha que ser o DTO
-	//	List<Category> list = service.findAll();		
-	//	return ResponseEntity.ok(list);
-	//}
-	
-	/*
-	//antes de ser por paginação
+		
 	@GetMapping
-	public ResponseEntity<List<CategoryDTO>> findAll(){
-		List<CategoryDTO> list = service.findAll();
-		return ResponseEntity.ok(list);
-	}
-	
-	*/
-	
-	@GetMapping
-	public ResponseEntity<Page<CategoryDTO>> findAll(
+	public ResponseEntity<Page<ProductDTO>> findAll(
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
@@ -62,38 +38,37 @@ public class CategoryResource {
 		//atributo especial
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		
-		Page<CategoryDTO> list = service.findAllPaged(pageRequest);
+		Page<ProductDTO> list = service.findAllPaged(pageRequest);
 		return ResponseEntity.ok(list);
 	}
 	
-	
-	
-	
+		
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<CategoryDTO> findById(@PathVariable Long id){
-		CategoryDTO dto = service.findById(id);
+	public ResponseEntity<ProductDTO> findById(@PathVariable Long id){
+		ProductDTO dto = service.findById(id);
 		return ResponseEntity.ok(dto);
 	}
 	
 	@PostMapping
-	public ResponseEntity<CategoryDTO> insert(@RequestBody CategoryDTO dto){
+	public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO dto){
 		 dto = service.insert(dto);
 		 //colocar o cabeario da resposta de inserção
-		 URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
+		 //URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
 		 //retorno com http 201(criado)
-		 return ResponseEntity.created(uri).body(dto);
+		 //return ResponseEntity.created(uri).body(dto);
+		 return null;
 		 
 	}
 	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<CategoryDTO> update(@PathVariable Long id,@RequestBody CategoryDTO dto){
+	public ResponseEntity<ProductDTO> update(@PathVariable Long id,@RequestBody ProductDTO dto){
 		 dto = service.update(id,dto);		
 		 return ResponseEntity.ok(dto);
 		 
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<CategoryDTO> delete(@PathVariable Long id){
+	public ResponseEntity<ProductDTO> delete(@PathVariable Long id){
 		  service.delete(id);
 		  return ResponseEntity.noContent().build();
 		  

@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.devsuperior.dscatalog.dto.CategoryDTO;
-import com.devsuperior.dscatalog.entities.Category;
-import com.devsuperior.dscatalog.repositories.CategoryRepository;
+import com.devsuperior.dscatalog.dto.ProductDTO;
+import com.devsuperior.dscatalog.entities.Product;
+import com.devsuperior.dscatalog.repositories.ProductRepository;
 import com.devsuperior.dscatalog.services.exceptions.DatabaseException;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 
@@ -21,75 +21,49 @@ import jakarta.persistence.EntityNotFoundException;
 
 
 @Service
-public class CategoryService {
+public class ProductService {
 	
 	@Autowired
-	private CategoryRepository repository;
+	private ProductRepository repository;
 	
-	//teste para depois transformar para DTO
-	/*
-	public List<Category> findAll(){
-		return repository.findAll();
-	}
-	//fim teste	 
-	 */
-	
-	/*
-	 //ANTES SEM PAGINAÇÃO	 
-	@Transactional(readOnly = true)
-	public List<CategoryDTO> findAll(){
-		List<Category> list = repository.findAll();
-		//expressão lambida
-		return list.stream().map(x -> new CategoryDTO(x)).collect(Collectors.toList());
-		//semelhante abaixo:
-		/*
-		List<CategoryDTO> listDTO = new ArrayList<>();
-		for(Category cat : list) {
-			listDTO.add(new CategoryDTO(cat));
-		}
-	
-		//fim demostração lambida		
-	}
-	*/
-	
-	
-	@Transactional(readOnly = true)
-	public Page<CategoryDTO> findAllPaged(PageRequest pageRequest){
-		Page<Category> list = repository.findAll(pageRequest);		
-		return list.map(x -> new CategoryDTO(x));		
-		}
-	
-	
-	@Transactional(readOnly = true)
-	public CategoryDTO findById(Long id) {
-		//optional evita trabalhar com valor nulo
-		Optional<Category> obj = repository.findById(id);
-		//o metodo get pega o objeto do optional
-		//Category entity = obj.get(); //outra implantação do Optional abaixo com expressão lambida
-		Category entity = obj.orElseThrow( () -> new ResourceNotFoundException("Entidade não encontrada."));
 		
-		return new CategoryDTO(entity);
+	@Transactional(readOnly = true)
+	public Page<ProductDTO> findAllPaged(PageRequest pageRequest){
+		Page<Product> list = repository.findAll(pageRequest);		
+		return list.map(x -> new ProductDTO(x));		
+		}
+	
+	
+	@Transactional(readOnly = true)
+	public ProductDTO findById(Long id) {
+		//optional evita trabalhar com valor nulo
+		Optional<Product> obj = repository.findById(id);
+		//o metodo get pega o objeto do optional
+		//Product entity = obj.get(); //outra implantação do Optional abaixo com expressão lambida
+		Product entity = obj.orElseThrow( () -> new ResourceNotFoundException("Entidade não encontrada."));
+		
+		return new ProductDTO(entity, entity.getCategories());
 		
 	}
 	@Transactional
-	public CategoryDTO insert(CategoryDTO dto) {
+	public ProductDTO insert(ProductDTO dto) {
 		
-		Category entity = new Category();
-		entity.setName(dto.getName());
+		Product entity = new Product();
+		//entity.setName(dto.getName());
 		//o metodo save retorna uma referencia para a entidade salva, por isso entity = repository.save(entity); e não simplesmente repository.save(entity);
 		entity = repository.save(entity);
-		return new CategoryDTO(entity);
+		return new ProductDTO(entity);
 		
 	}
 
 	@Transactional
-	public CategoryDTO update(Long id, CategoryDTO dto) {
+	public ProductDTO update(Long id, ProductDTO dto) {
 		//caso não ache o código da categoria, por isso o bloco try
 		try {
-			 Category entity = repository.getReferenceById(id);
-			 entity.setName(dto.getName());
+			 Product entity = repository.getReferenceById(id);
+			// entity.setName(dto.getName());
 			 entity = repository.save(entity);	
-			 return new CategoryDTO(entity);
+			 return new ProductDTO(entity);
 		
 			} catch(EntityNotFoundException e) 
 				{
